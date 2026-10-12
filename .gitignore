@@ -5,11 +5,8 @@
 .vscode/
 
 # C++ build outputs created from assignment*.cpp by nla/Makefile
-/nla/assignment*
-!/nla/assignment*.cpp
-/nla/*.o
-/nla/*.d
+/nla/build/
 
 # Generated experiment results and Makefile run markers
 /nla/data/assignment*_*.dat
-/nla/.cache/
+/nla/figure/assignment*_*.png

@@ -1,30 +1,34 @@
-CXX      = clang++
-CXXFLAGS = -std=c++14 -O2 -Wall -I/opt/homebrew/include/eigen3
+CXX = clang++
+EIGEN3_INCLUDE ?= /opt/homebrew/include/eigen3
+CXXFLAGS = -std=c++14 -O2 -Wall -I$(EIGEN3_INCLUDE)
 
-SRCS  = $(wildcard assignment*.cpp)
-PROGS = $(SRCS:.cpp=)
-CACHE = .cache
+SRCS = assignment1.cpp assignment2.cpp
+BUILD = build
+PROGS = $(SRCS:%.cpp=$(BUILD)/%)
+CACHE = $(BUILD)/.cache
+RUN_TARGETS = $(SRCS:%.cpp=run-%)
+
+.PHONY: all run clean $(RUN_TARGETS)
 
 all: $(PROGS)
 
-%: %.cpp
+$(BUILD)/%: %.cpp | $(BUILD)
 	$(CXX) $(CXXFLAGS) $< -o $@
 
-run: $(PROGS:%=$(CACHE)/%.done)
+$(BUILD) $(CACHE):
+	mkdir -p $@
 
-$(CACHE)/%.done: %
+run: $(SRCS:%.cpp=$(CACHE)/%.done)
+
+$(CACHE)/%.done: $(BUILD)/% | $(CACHE)
+	@mkdir -p data
 	./$<
-	@mkdir -p $(CACHE)
 	touch $@
 
-run-%: %
+$(RUN_TARGETS): run-%: $(BUILD)/%
+	@mkdir -p data
 	./$<
 
 clean:
-	rm -f $(PROGS) data/assignment*_*.dat
-	rm -rf $(CACHE)
-
-clean-%:
-	rm -f $* data/$*_*.dat $(CACHE)/$*.done
-
-.PHONY: all run clean
+	rm -f data/assignment*_*.dat
+	rm -rf $(BUILD)

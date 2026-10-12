@@ -60,7 +60,7 @@ int main() {
             auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
 
             double residual_norm = (A * x_eliminated - b).norm();
-            double diff = (x_true - x_eliminated).norm();
+            double diff = (x_true - x_eliminated).norm() / x_true.norm();
             outfile << i << "\t" << residual_norm << "\t" << diff << "\t" << duration.count() << std::endl;
         }
         outfile.close();
